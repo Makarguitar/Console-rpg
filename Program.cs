@@ -3,69 +3,87 @@ using System.Runtime.CompilerServices;
 
 namespace Console_rpg
 {
+    enum TypeOfCharacter
+    {
+        None, 
+        BowMan,
+        Warrior,
+        Magician
+    }
+
+    enum TypeOfBonus
+    {
+        None,
+        Hp,
+        Luck,
+        Damage
+    }
+
     internal class Program
     {
         static void Main(string[] args)
         {
+            string[] typeNames = { "nobody knows", "Bowman", "Warrior", "Magician" };
+            string[] bonusNames = { "No bonus", "More Hp", "More Luck", "More Damage" };
             Console.WriteLine("Type in your nume");
             string userName = Console.ReadLine();
             Random r = new Random();
-            string type = "";
-            string bonus = "";
+            TypeOfCharacter type = TypeOfCharacter.None;
+            TypeOfBonus bonus = TypeOfBonus.None;
             int choice;
             int hp = 100;
             int luck = 30;
             int damage = 30;
 
-            while (type == "")
+            while (type == TypeOfCharacter.None)
             {
                 Console.WriteLine("Choose a churucter");
-                Console.WriteLine("1 - Bow Man, 2 - Warrior, 3 - Magician,");
+                Console.WriteLine($"1 - {typeNames[(int)TypeOfCharacter.BowMan]}, 2 - {typeNames[(int)TypeOfCharacter.Warrior]}, 3 - {typeNames[(int)TypeOfCharacter.Magician]}");
                 choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
                     case 1:
-                        type = "bow man";
+                        type = TypeOfCharacter.BowMan;
                         break;
                     case 2:
-                        type = "warrior";
+                        type = TypeOfCharacter.Warrior;
                         break;
                     case 3:
-                        type = "magician";
+                        type = TypeOfCharacter.Magician;
                         break;
                     default:
                         Console.WriteLine("this is not a type");
                         break;
                 }
             }
-            Console.WriteLine($"You chose the {type}");
+            Console.WriteLine($"You chose the {typeNames[(int)type]}");
 
-            while (bonus == "")
+            while (bonus == TypeOfBonus.None)
             {
                 Console.WriteLine("Choose a banus");
-                Console.WriteLine("1 - more hp, 2 - more luck, 3 - more damage");
+                Console.WriteLine($"1 - {bonusNames[(int)TypeOfBonus.Hp]}, 2 - {bonusNames[(int)TypeOfBonus.Luck]}, 3 - {bonusNames[(int)TypeOfBonus.Damage]}");
                 choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
                     case 1:
-                        bonus = "more hp";
+                        bonus = TypeOfBonus.Hp;
                         hp *= 2;
                         break;
                     case 2:
-                        bonus = "more luck";
+                        bonus = TypeOfBonus.Luck;
                         luck *= 2;
                         break;
                     case 3:
-                        bonus = "more damage";
+                        bonus = TypeOfBonus.Damage;
                         damage *= 2;
                         break;
                     default:
                         Console.WriteLine("this is not a bonus");
                         break;
                 }
-                Console.WriteLine($"You chose banus: {bonus}");
+                Console.WriteLine($"You chose banus: {bonusNames[(int)bonus]}");
                 Console.WriteLine($"Your attributes: hp = {hp}, luck = {luck}, damage = {damage}");
 
             }
@@ -81,10 +99,29 @@ namespace Console_rpg
                     switch (numOfAction)
                     {
                         case 1:
-                            Console.WriteLine($"{userName} went walking");
+                            Console.WriteLine($"{userName} went somewhere");
+                            string[] directions = { "west", "east", "south", "north" };
+                            for (int j = 0; j < 3; j++)
+                            {
+                                int km = r.Next(1, 10);
+                                int direction = r.Next(0, directions.Length);
+                                Console.WriteLine($"{userName} went walking for {km} km to {directions[direction]}");
+                            }
                             break;
                         case 2:
                             Console.WriteLine($"{userName} started to talk");
+                            /*
+                            int hours = 1;
+                            while (hours <= 3)
+                            {
+                                Console.WriteLine($"{userName} talked {hours}h");
+                                hours++;
+                            }
+                            */
+                            for (int hours = 1; hours <= 3; hours++)
+                            {
+                                Console.WriteLine($"{userName} talked {hours}h");
+                            }
                             break;
                         case 3:
                             int hour = r.Next(1, 6);
