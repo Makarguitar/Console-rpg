@@ -31,25 +31,36 @@ namespace Console_rpg
         {
             PrintTextWithBorder("Hello, my name is bozmh, you will play the hardest game in the wurld and you will rage quite");
             Character user = new Character();
-            CustomizeCharacter(user);
+            CustomizeCharacter(user, false);
 
             GameLoop(user); 
                        
         }
 
-        static void CustomizeCharacter(Character character)
+        static void CustomizeCharacter(Character character, bool isEnemy)
         {
-            Console.WriteLine("Type in your nume");
+            if (isEnemy == true)
+            {
+                string[] names = { "dibilich", "bomzh", "alcogolic", "god ra", "valdimir putin" };
+                Random r = new Random();
+                int index = r.Next(0, names.Length);
+                character.name = names[index];
+            }
+            else
+            {
+                Console.WriteLine("Type in your nume");
 
-            character.name = Console.ReadLine();
-            ChooseType(character);
-            ChooseBonus(character);
+                character.name = Console.ReadLine();
+                ChooseType(character);
+                ChooseBonus(character);
 
 
-            Console.WriteLine($"You chose the {typeNames[(int)character.type]}");
+                Console.WriteLine($"You chose the {typeNames[(int)character.type]}");
 
-            Console.WriteLine($"You chose banus: {bonusNames[(int)character.bonus]}");
-            Console.WriteLine($"Your attributes: hp = {character.hp}, luck = {character.luck}, damage = {character.damage}");
+                Console.WriteLine($"You chose banus: {bonusNames[(int)character.bonus]}");
+                Console.WriteLine($"Your attributes: hp = {character.hp}, luck = {character.luck}, damage = {character.damage}");
+            }
+                
         }
 
         static void ChooseType(Character user)
@@ -126,7 +137,7 @@ namespace Console_rpg
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    Console.WriteLine("1 - walk  2 - talk  3 - rest  4 - finish the day");
+                    Console.WriteLine("1 - walk  2 - talk  3 - rest  4 - finish the day 5 - attack");
                     Console.WriteLine("Choose an action");
                     int numOfAction = int.Parse(Console.ReadLine());
                     switch (numOfAction)
@@ -164,6 +175,8 @@ namespace Console_rpg
                             Console.WriteLine($"{user.name} made a camp and went to sleep");
                             i = 5;
                             break;
+                        case 5:
+                            
                         default:
                             Console.WriteLine($"{user.name} doesnt know how to do this action");
                             break;
@@ -177,13 +190,17 @@ namespace Console_rpg
                 }
             }
         }
-    }
 
-    class Character
-    {
-        public string name;
-        public int hp = 100, damage = 30, luck = 30;
-        public TypeOfCharacter type = TypeOfCharacter.None;
-        public TypeOfBonus bonus = TypeOfBonus.None;
+        static void Battle(Character player, Character enemy)
+        {
+            while (player.hp > 0 && enemy.hp > 0)
+            {
+                player.Attack(enemy);
+                if (enemy.hp > 0)
+                {
+                    enemy.Attack(player);
+                }
+            }
+        }
     }
 }
