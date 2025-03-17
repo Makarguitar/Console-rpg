@@ -27,17 +27,39 @@ namespace Console_rpg
         static string[] typeNames = { "nobody knows", "Bowman", "Warrior", "Magician" };
         static string[] bonusNames = { "No bonus", "More Hp", "More Luck", "More Damage" };
         static int choice;
+        static List<Character> enemies = new List<Character>();
+
         static void Main(string[] args)
         {
             PrintTextWithBorder("Hello, my name is bozmh, you will play the hardest game in the wurld and you will rage quite");
             Character user = new Character();
             CustomizeCharacter(user, false);
 
+            Character enemy1 = new Character();
+            CustomizeCharacter(enemy1, true);
+            enemies.Add(enemy1);
+            Character enemy2 = new Character();
+            CustomizeCharacter(enemy2, true);
+            enemies.Add(enemy2);
+
             GameLoop(user); 
                        
         }
 
         static void CustomizeCharacter(Character character, bool isEnemy)
+        {
+            ChooseName(character, isEnemy);
+            ChooseType(character, isEnemy);
+            ChooseBonus(character, isEnemy);
+
+            if (isEnemy == false)
+            {
+                Console.WriteLine($"You chose the {typeNames[(int)character.type]}");
+                Console.WriteLine($"You chose banus: {bonusNames[(int)character.bonus]}");
+                Console.WriteLine($"Your attributes: hp = {character.hp}, luck = {character.luck}, damage = {character.damage}");
+            }
+        }
+        static void ChooseName(Character character, bool isEnemy)
         {
             if (isEnemy == true)
             {
@@ -49,53 +71,59 @@ namespace Console_rpg
             else
             {
                 Console.WriteLine("Type in your nume");
-
                 character.name = Console.ReadLine();
-                ChooseType(character);
-                ChooseBonus(character);
-
-
-                Console.WriteLine($"You chose the {typeNames[(int)character.type]}");
-
-                Console.WriteLine($"You chose banus: {bonusNames[(int)character.bonus]}");
-                Console.WriteLine($"Your attributes: hp = {character.hp}, luck = {character.luck}, damage = {character.damage}");
             }
-                
         }
 
-        static void ChooseType(Character user)
+        static void ChooseType(Character user, bool isEnemy)
         {
             while (user.type == TypeOfCharacter.None)
             {
-                Console.WriteLine("Choose a churucter");
-                Console.WriteLine($"1 - {typeNames[(int)TypeOfCharacter.BowMan]}, 2 - {typeNames[(int)TypeOfCharacter.Warrior]}, 3 - {typeNames[(int)TypeOfCharacter.Magician]}");
-                choice = int.Parse(Console.ReadLine());
-
-                switch (choice)
+                if (isEnemy == true)
                 {
-                    case 1:
-                        user.type = TypeOfCharacter.BowMan;
-                        break;
-                    case 2:
-                        user.type = TypeOfCharacter.Warrior;
-                        break;
-                    case 3:
-                        user.type = TypeOfCharacter.Magician;
-                        break;
-                    default:
-                        Console.WriteLine("this is not a type");
-                        break;
+                    Random r = new Random();
+                    choice = r.Next(1, typeNames.Length);
                 }
+                else
+                {
+                    Console.WriteLine("Choose a churucter");
+                    Console.WriteLine($"1 - {typeNames[(int)TypeOfCharacter.BowMan]}, 2 - {typeNames[(int)TypeOfCharacter.Warrior]}, 3 - {typeNames[(int)TypeOfCharacter.Magician]}");
+                    choice = int.Parse(Console.ReadLine()); 
+                }
+
+                    switch (choice)
+                    {
+                        case 1:
+                            user.type = TypeOfCharacter.BowMan;
+                            break;
+                        case 2:
+                            user.type = TypeOfCharacter.Warrior;
+                            break;
+                        case 3:
+                            user.type = TypeOfCharacter.Magician;
+                            break;
+                        default:
+                            Console.WriteLine("this is not a type");
+                            break;
+                    }
             }
         }
 
-        static void ChooseBonus(Character user)
+        static void ChooseBonus(Character user, bool isEnemy)
         {
             while (user.bonus == TypeOfBonus.None)
             {
-                Console.WriteLine("Choose a banus");
-                Console.WriteLine($"1 - {bonusNames[(int)TypeOfBonus.Hp]}, 2 - {bonusNames[(int)TypeOfBonus.Luck]}, 3 - {bonusNames[(int)TypeOfBonus.Damage]}");
-                choice = int.Parse(Console.ReadLine());
+                if (isEnemy == true)
+                {
+                    Random r = new Random();
+                    choice = r.Next(1, typeNames.Length);
+                }
+                else
+                {
+                    Console.WriteLine("Choose a banus");
+                    Console.WriteLine($"1 - {bonusNames[(int)TypeOfBonus.Hp]}, 2 - {bonusNames[(int)TypeOfBonus.Luck]}, 3 - {bonusNames[(int)TypeOfBonus.Damage]}");
+                    choice = int.Parse(Console.ReadLine());
+                }
 
                 switch (choice)
                 {
@@ -176,7 +204,22 @@ namespace Console_rpg
                             i = 5;
                             break;
                         case 5:
-                            
+                            if (user.hp > 0)
+                            {
+                                if (enemies.Count > 0)
+                                {
+                                    Battle(user, enemies[0]);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("there is no enemies :)");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("you are too weak :(");
+                            }
+                                break;
                         default:
                             Console.WriteLine($"{user.name} doesnt know how to do this action");
                             break;
@@ -200,6 +243,11 @@ namespace Console_rpg
                 {
                     enemy.Attack(player);
                 }
+            }
+            if (enemy.hp <= 0)
+            {
+                //enemies.RemoveAt(0);
+                enemies.Remove(enemy);
             }
         }
     }
